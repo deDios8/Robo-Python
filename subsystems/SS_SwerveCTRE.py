@@ -1,5 +1,5 @@
 import phoenix6
-import commands2
+import commands2 #installed from robotpy-commands-v2
 from wpimath.estimator import SwerveDrive4PoseEstimator
 from wpimath.geometry import Translation2d, Rotation2d, Pose2d
 from wpimath.kinematics import SwerveDrive4Kinematics, SwerveModuleState, ChassisSpeeds
@@ -19,21 +19,24 @@ class SS_SwerveCTRE(commands2.Subsystem):
         )
        
         # Helper function to create a swerve module
-        def create_swerve_module(drive_motor_id, steer_motor_id, encoder_id, cancoder_offset=0):
+        def create_swerve_module(drive_motor_id, steer_motor_id, encoder_id, cancoder_offset=0, 
+                                 drive_p=.1, drive_i=0, drive_d=0, drive_s=0, drive_v=0.124,
+                                 steer_p=50, steer_i=0, steer_d=0.1, steer_v=0.124, steer_s=0, steer_a=0,
+                                 ):
             return SwerveModuleConstants(
                 drive_motor_id=drive_motor_id,
                 steer_motor_id=steer_motor_id,
                 encoder_id=encoder_id,
                 cancoder_offset=phoenix6.units.rotation(cancoder_offset), # phoenix6.units.rotation
+                drive_motor_gains=phoenix6.configs.Slot0Configs()
+                    .with_k_p(drive_p).with_k_i(drive_i).with_k_d(drive_d)
+                    .with_k_s(drive_s).with_k_v(drive_v),
+                steer_motor_gains=phoenix6.configs.Slot0Configs()
+                    .with_k_p(steer_p).with_k_i(steer_i).with_k_d(steer_d)
+                    .with_k_s(steer_s).with_k_v(steer_v).with_k_a(steer_a),
                 drive_motor_inverted=False,
                 steer_motor_inverted=False,
-                drive_motor_gains=phoenix6.configs.Slot0Configs()
-                    .with_k_p(0.1).with_k_i(0).with_k_d(0)
-                    .with_k_s(0).with_k_v(0.124),
-                steer_motor_gains=phoenix6.configs.Slot0Configs()
-                    .with_k_p(50).with_k_i(0).with_k_d(0.1)
-                    .with_k_s(0).with_k_v(0.1).with_k_a(0),
-                drive_motor_gear_ratio=5.902777777777778,
+                drive_motor_gear_ratio=5.90278,
                 steer_motor_gear_ratio=12.8,
                 coupling_gear_ratio=3.125, # Every 1 rotation on azimuth motor causes this many rotations on drive motor
                 wheel_radius=phoenix6.units.inch(2),
@@ -41,7 +44,7 @@ class SS_SwerveCTRE(commands2.Subsystem):
                 slip_current=phoenix6.units.ampere(120),
                 steer_motor_closed_loop_output=ClosedLoopOutputType.VOLTAGE,
                 drive_motor_closed_loop_output=ClosedLoopOutputType.VOLTAGE,
-                steer_motor_type=phoenix6.hardware.TalonFX, # TalonFX is frequently used with Kraken motors
+                steer_motor_type=phoenix6.hardware.TalonFX, # TalonFX control unit is frequently used with Kraken motors
                 drive_motor_type=phoenix6.hardware.TalonFX,
                 cancoder_initial_configs=phoenix6.configs.CANcoderConfiguration(),
                 drive_motor_initial_configs=phoenix6.configs.TalonFXConfiguration()

@@ -1,5 +1,5 @@
 import wpilib
-import commands2
+import commands2 #installed from robotpy-commands-v2
 from subsystems.SS_GeneralMotor import SS_GeneralMotor
 
 

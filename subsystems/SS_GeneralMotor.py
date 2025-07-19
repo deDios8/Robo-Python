@@ -9,7 +9,7 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.spark_motor = wpilib.PWMSparkMax(constants.PWM_CHANNELS["GENERAL_MOTOR"])
         self.spark_motor.setSafetyEnabled(False)
         self.is_running = False
-        self.speed = 1
+        self.speed = .6
 
     def periodic(self): # Special function called periodically by the robot
         wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING"], self.is_running)
