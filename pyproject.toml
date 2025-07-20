@@ -11,11 +11,10 @@ robotpy_version = "2025.3.2.2"
 # Which extra RobotPy components should be installed
 # -> equivalent to `pip install robotpy[extra1, ...]
 robotpy_extras = [
-    "rev",
-    "phoenix6",
+    # "rev",
+    # "phoenix6",
     "commands2",
-    "robotpy-commands-v2",
-    # "pathplannerlib",
+    "pathplannerlib",
     # "all",
     # "apriltag",
     # "cscore",
@@ -27,4 +26,8 @@ robotpy_extras = [
 ]
 
 # Other pip packages to install
-requires = []
+requires = [
+    "robotpy-commands-v2",
+    "pynetworktables",
+    "phoenix6",
+]

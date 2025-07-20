@@ -1,14 +1,11 @@
 PWM_CHANNELS = {
     "GENERAL_MOTOR": 9,
-    "ALGAE_WACKER_SERVO": 2,
-    "SHOOTER_MOTOR": 0,
-    "CLIMBER_MOTOR": 1,
+    "GENERAL_SERVO": 1,
 }
 
 DASHBOARD_TITLES = {
     "GENERAL_MOTOR_RUNNING": "General Motor Running",
-    "ALGAE_WACKER_SERVO_POSITION": "Algae Wacker Servo Position",
-    "SHOOTER_MOTOR_RUNNING": "Shooter Motor Running",
-    "CLIMBER_MOTOR_RUNNING": "Climber Motor Running",
+    "GENERAL_SERVO_POSITION": "General Servo Position",
+    "GENERAL_SERVO_DESTINATION": "General Servo Destination",
 }
 
