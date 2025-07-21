@@ -1,0 +1,79 @@
+import ntcore
+import wpilib
+
+from networktables import NetworkTables
+from commands2 import SubsystemBase
+
+
+class VisionSubsystem(SubsystemBase):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.inst = ntcore.NetworkTableInstance.getDefault()
+
+        self.left = self.VisionTable(self.inst, "limelight-left")
+        self.right = self.VisionTable(self.inst, "limelight-right")
+
+        self.avg_y_cord = 0
+        self.avg_x_cord = 0
+        self.avg_v_entry = 0
+        self.avg_id_entry = 0
+
+        vision_table = self.inst.getTable("vision_table")
+        self.avg_y_cord_entry = vision_table.getFloatTopic("avg_y_cord").publish()
+        self.avg_x_cord_entry = vision_table.getFloatTopic("avg_x_cord").publish()
+        self.avg_v_entry_publish = vision_table.getFloatTopic("avg_v_entry").publish()
+        self.avg_id_entry_publish = vision_table.getFloatTopic("avg_id_entry").publish()
+
+    class VisionTable:
+        def __init__(self, inst, table_name):
+            self.table = inst.getTable(table_name)
+            self.x_sub = self.table.getDoubleTopic("tx").subscribe(0.0)
+            self.y_sub = self.table.getDoubleTopic("ty").subscribe(0.0)
+            self.a_sub = self.table.getDoubleTopic("ta").subscribe(0.0)
+            self.v_sub = self.table.getDoubleTopic("tv").subscribe(0.0)
+            self.id_sub = self.table.getDoubleTopic("tid").subscribe(0)
+            self.blue_pos_sub = self.table.getFloatArrayTopic("botpose_orb_wpiblue").subscribe([0.0, 0.0])
+
+            self.x_entry = 0
+            self.y_entry = 0
+            self.a_entry = 0
+            self.v_entry = 0
+            self.id_entry = 0
+            self.blue_pos = 0
+
+    def periodic(self):
+        for each in [self.left, self.right]:
+            each.x_entry = each.x_sub.get()
+            each.y_entry = each.y_sub.get()
+            each.a_entry = each.a_sub.get()
+            each.v_entry = each.v_sub.get()
+            each.id_entry = each.id_sub.get()
+            each.blue_pos = each.blue_pos_sub.get()
+
+        # Avg Info Estimator
+        if self.left.v_entry == 1 and self.right.v_entry == 1:
+            self.avg_y_cord = (self.left.blue_pos[1] + self.right.blue_pos[1]) / 2
+            self.avg_x_cord = (self.left.blue_pos[0] + self.right.blue_pos[0]) / 2
+            self.avg_v_entry = 1
+            self.avg_id_entry = self.left.id_entry
+        elif self.left.v_entry == 1 and self.right.v_entry == 0:
+            self.avg_y_cord = self.left.blue_pos[1]
+            self.avg_x_cord = self.left.blue_pos[0]
+            self.avg_v_entry = 1
+            self.avg_id_entry = self.left.id_entry
+        elif self.left.v_entry == 0 and self.right.v_entry == 1:
+            self.avg_y_cord = self.right.blue_pos[1]
+            self.avg_x_cord = self.right.blue_pos[0]
+            self.avg_v_entry = 1
+            self.avg_id_entry = self.right.id_entry
+        else:
+            self.avg_y_cord = -1
+            self.avg_x_cord = -1
+            self.avg_v_entry = -1
+            self.avg_id_entry = -1
+
+        self.avg_y_cord_entry.set(self.avg_y_cord)
+        self.avg_x_cord_entry.set(self.avg_x_cord)
+        self.avg_v_entry_publish.set(self.avg_v_entry)
+        self.avg_id_entry_publish.set(self.avg_id_entry)

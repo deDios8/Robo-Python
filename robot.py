@@ -29,11 +29,9 @@ class RobotContainer:
         self.controller.a().onFalse(self.ss_general_servo.run_to_min_position_command())
         self.controller.b().onFalse(self.ss_general_servo.run_to_max_position_command())
         self.controller.y().onFalse(self.ss_general_servo.run_to_A_position_command())
-        self.controller.rightBumper().onTrue(self.ss_general_servo.run_forward_command())
-        self.controller.rightBumper().onFalse(self.ss_general_servo.stop_run_command())
-        self.controller.leftBumper().onTrue(self.ss_general_servo.run_backward_command())
-        self.controller.leftBumper().onFalse(self.ss_general_servo.stop_run_command())
-
+        self.controller.rightBumper().whileTrue(self.ss_general_servo.adjust_servo_ahead_command())
+        self.controller.leftBumper().whileTrue(self.ss_general_servo.adjust_servo_reverse_command())
+        
 
 if __name__ == "__main__":
     wpilib.run(MyRobot)

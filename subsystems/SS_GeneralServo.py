@@ -13,42 +13,38 @@ class SS_GeneralServo(commands2.Subsystem):
         pulse_width_max = wpimath.units.microseconds(2400)
         deadband = wpimath.units.microseconds(8)
         self.servo.setBounds(pulse_width_min, deadband, pulse_width_center, deadband, pulse_width_max)
+        self.run_speed = 0.01
         self.min_position = 0.0
-        self.position_A = 0.5
         self.max_position = 0.9
-        self.position = self.position_A
-        self.destination = self.position_A
-        self.servo.set(self.position_A)
-        self.run_speed = 0.001
+        self.position_A = 0.5
+        self.set_destination(self.position_A)
 
 
-    def periodic(self): # Special function called periodically by the robot
-        self.position = self.servo.getPosition()
+    def set_destination(self, destination):
+        print(f"New destination: {destination}")
+        self.position = destination
+        self.servo.set(self.position)
         wpilib.SmartDashboard.putNumber(constants.DASHBOARD_TITLES["GENERAL_SERVO_POSITION"], self.position)
-        wpilib.SmartDashboard.putNumber(constants.DASHBOARD_TITLES["GENERAL_SERVO_DESTINATION"], self.destination)
 
-    def run_to_position(self, destination):
-        print(f"Running to destination: {destination}")
-        self.servo.set(destination)
     def run_to_min_position_command(self):
-        return commands2.cmd.runOnce(lambda: self.run_to_position(self.min_position), self)
-    def run_to_A_position_command(self):
-        return commands2.cmd.runOnce(lambda: self.run_to_position(self.position_A), self)
+        return commands2.cmd.runOnce(lambda: self.set_destination(self.min_position), self)
+
     def run_to_max_position_command(self):
-        return commands2.cmd.runOnce(lambda: self.run_to_position(self.max_position), self)
+        return commands2.cmd.runOnce(lambda: self.set_destination(self.max_position), self)
 
-    def run_direction(self, direction):
-        print(f"Run direction to: {self.position}")
-        run_speed = self.run_speed * direction
-        self.destination = min(self.position + run_speed, self.max_position)
-        self.destination = max(self.destination, self.min_position)
-        self.run_to_position(self.destination)
-    def run_forward_command(self):
-        return commands2.cmd.runOnce(lambda: self.run_direction(1), self)
-    def run_backward_command(self):
-        return commands2.cmd.runOnce(lambda: self.run_direction(-1), self)
+    def run_to_A_position_command(self):
+        return commands2.cmd.runOnce(lambda: self.set_destination(self.position_A), self)
 
-    def stop_run_command(self):
-        print(f"Stopping run at: {self.position}")
-        self.destination = self.position
-        return commands2.cmd.runOnce(lambda: self.run_to_position(self.position), self)
+
+    def adjust_position(self, direction):
+        this_run_speed = self.run_speed * direction
+        new_position_capped_at_min = min(self.position + this_run_speed, self.max_position)
+        new_position_within_caps = max(new_position_capped_at_min, self.min_position)
+        self.set_destination(new_position_within_caps)
+
+    def adjust_servo_ahead_command(self):
+        return commands2.cmd.runOnce(lambda: self.adjust_position(1), self)
+
+    def adjust_servo_reverse_command(self):
+        return commands2.cmd.runOnce(lambda: self.adjust_position(-1), self)
+

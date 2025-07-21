@@ -3,6 +3,7 @@
 * pip install import robotpy-commands-v2
 * pip install phoenix6
 * pip install pynetworktables
+* pip install robotpy-pathplannerlib
 * pip install wpilib # is this included in robotpy
 
 # Python Commands

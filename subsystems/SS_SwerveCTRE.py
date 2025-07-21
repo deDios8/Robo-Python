@@ -23,6 +23,7 @@ class SS_SwerveCTRE(commands2.Subsystem):
                                  drive_p=.1, drive_i=0, drive_d=0, drive_s=0, drive_v=0.124,
                                  steer_p=50, steer_i=0, steer_d=0.1, steer_v=0.124, steer_s=0, steer_a=0,
                                  ):
+            # maybe we should use swerve_module_constants.py SwerveModuleConstantsFactory
             return SwerveModuleConstants(
                 drive_motor_id=drive_motor_id,
                 steer_motor_id=steer_motor_id,
@@ -71,11 +72,11 @@ class SS_SwerveCTRE(commands2.Subsystem):
 
         # Initialize the swerve drivetrain with the defined constants and modules
         self.drivetrain = SwerveDrivetrain(
-            phoenix6.hardware.TalonFX, # TalonFX is frequently used with Kraken motors
-            phoenix6.hardware.TalonFX, 
-            phoenix6.hardware.CANcoder,
-            self.drivetrain_constants,
-            self.modules,
+            drive_motor_type = phoenix6.hardware.TalonFX, # TalonFX is frequently used with Kraken motors
+            steer_motor_type = phoenix6.hardware.TalonFX, 
+            encoder_type = phoenix6.hardware.CANcoder,
+            drivetrain_constants = self.drivetrain_constants,
+            modules = self.modules,
         )
 
         # Define kinematics
@@ -91,7 +92,7 @@ class SS_SwerveCTRE(commands2.Subsystem):
         # Initialize odometry
         self.odometry = SwerveDrive4PoseEstimator(
             self.kinematics,
-            self.drivetrain.get_rotation2d(), # Use the gyro angle from your SwerveDrivetrain
+            self.drivetrain.get_state().raw_heading, # Use the gyro angle from your SwerveDrivetrain
             tuple(module.get_position() for module in self.drivetrain.modules),
             Pose2d(),
         )
@@ -100,24 +101,25 @@ class SS_SwerveCTRE(commands2.Subsystem):
     def periodic(self):
         # Update odometry in periodic
         self.odometry.update(
-            self.drivetrain.get_rotation2d(),
+            self.drivetrain.get_state().raw_heading, #TODO not sure if get_rotation3d is ok, because no get_pose2d was available
             tuple(module.get_position() for module in self.drivetrain.modules)
         )
 
     def set_module_states(self, module_states):
         # Set individual module states (e.g., speed and angle)
-        self.kinematics.desaturateWheelSpeeds(module_states, self.drivetrain.get_max_speed())
+        self.kinematics.desaturateWheelSpeeds(module_states, self.drivetrain.max_speed) #TODO: not sure if this can represnet max_speed of the modules
         for i, module_state in enumerate(module_states):
-            optimized_module_state = SwerveModuleState.optimize(module_state, self.drivetrain.modules[i].get_angle())
+            # optimized_module_state = SwerveModuleState.optimize(module_state, self.drivetrain.modules[i].get_angle())
+            optimized_module_state = SwerveModuleState.optimize(module_state, self.drivetrain.modules[i].get_current_state().angle)
             self.drivetrain.modules[i].set(optimized_module_state.speed, optimized_module_state.angle.radians())
 
     def get_pose(self):
-        return self.odometry.get_pose()
+        return self.odometry.getEstimatedPosition() # TODO: unknown if this is the correct function
 
     def reset_odometry(self, pose):
-        self.odometry.reset_position(
+        self.odometry.resetPosition( #TODO: The parameters here are not correct, need to check
             pose,
-            self.drivetrain.get_rotation2d(),
+            self.drivetrain.get_state().raw_heading,
             tuple(module.get_position() for module in self.drivetrain.modules),
         )
 
