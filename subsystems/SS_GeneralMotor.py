@@ -9,10 +9,12 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.spark_motor = wpilib.PWMSparkMax(constants.PWM_CHANNELS["GENERAL_MOTOR"])
         self.spark_motor.setSafetyEnabled(False)
         self.is_running = False
+        self.is_running_timed = False
         self.speed = .6
 
     def periodic(self): # Special function called periodically by the robot
         wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING"], self.is_running)
+        wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING_SECONDS"], self.is_running_timed)
 
 
     def run_forward(self):
@@ -26,6 +28,13 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.is_running = False
     def stop_motor_command(self):
         return commands2.cmd.runOnce(self.stop_motor, self)
-
-
+    
+    def run_for_3_seconds(self):
+        self.spark_motor.set(self.speed)
+        self.is_running_timed = True
+        commands2.cmd.waitSeconds(3)
+        self.stop_motor()
+    def run_for_3_seconds_command(self):
+        return commands2.cmd.runOnce(self.run_for_3_seconds, self)
+        
     

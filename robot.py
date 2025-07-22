@@ -26,12 +26,13 @@ class RobotContainer:
 
 
     def keybindings(self):
-        #when press and hold A, it goes to max position. when released, it goes back to min position. When button is pressed and held and b is pressed, it goes halfway.
+        #when press and hold A, it goes to max position. when released, it goes back to min position. 
         self.controller.x().onTrue(self.ss_general_motor.run_forward_command())
         self.controller.x().onFalse(self.ss_general_motor.stop_motor_command())
         self.controller.a().onTrue(self.ss_general_servo.run_to_max_position_command())
         self.controller.a().onFalse(self.ss_general_servo.run_to_min_position_command())
-        
+
+        #when both a+b are pressed, it goes to A position
         if self.controller.a() and self.controller.b():
             self.controller.a().onTrue(self.ss_general_servo.run_to_A_position_command())
             self.controller.b().onTrue(self.ss_general_servo.run_to_A_position_command())
@@ -40,6 +41,8 @@ class RobotContainer:
         self.controller.rightBumper().whileTrue(self.ss_general_servo.adjust_servo_ahead_command())
         self.controller.leftBumper().whileTrue(self.ss_general_servo.adjust_servo_reverse_command())
         
+        self.controller.b().onPress(self.ss_general_servo.run_for_3_seconds_command())
 
 if __name__ == "__main__":
+
     wpilib.run(MyRobot)
