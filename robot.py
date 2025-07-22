@@ -41,7 +41,7 @@ class RobotContainer:
         self.controller.rightBumper().whileTrue(self.ss_general_servo.adjust_servo_ahead_command())
         self.controller.leftBumper().whileTrue(self.ss_general_servo.adjust_servo_reverse_command())
         
-        self.controller.b().onPress(self.ss_general_servo.run_for_3_seconds_command())
+        self.controller.b().onFalse(self.ss_general_motor.run_for_3_seconds_command())
 
 if __name__ == "__main__":
 

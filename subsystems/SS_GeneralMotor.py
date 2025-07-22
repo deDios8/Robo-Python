@@ -1,7 +1,7 @@
 import wpilib
 import commands2
 import constants
-
+from commands2 import SequentialCommandGroup, WaitCommand
 
 class SS_GeneralMotor(commands2.Subsystem):
     def __init__(self):
@@ -29,12 +29,18 @@ class SS_GeneralMotor(commands2.Subsystem):
     def stop_motor_command(self):
         return commands2.cmd.runOnce(self.stop_motor, self)
     
-    def run_for_3_seconds(self):
-        self.spark_motor.set(self.speed)
-        self.is_running_timed = True
-        commands2.cmd.waitSeconds(3)
-        self.stop_motor()
     def run_for_3_seconds_command(self):
-        return commands2.cmd.runOnce(self.run_for_3_seconds, self)
-        
+        self.is_running_timed = True
+        command_group = SequentialCommandGroup(
+            self.run_forward_command(),
+            WaitCommand(3),
+            self.stop_motor_command()
+        )
+        self.is_running_timed = False
+        return command_group
     
+
+
+
+
+
