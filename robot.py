@@ -23,6 +23,25 @@ class RobotContainer:
         self.ss_general_motor = SS_GeneralMotor()
         self.ss_general_servo = SS_GeneralServo()
 
+    def complicatedCommand(self):
+        return commands2.ParallelCommandGroup(
+            self.ss_general_motor.run_forward_command(),
+            self.ss_general_servo.run_to_max_position_command(),
+            commands2.SequentialCommandGroup(
+                commands2.WaitCommand(1),
+                self.ss_general_motor.stop_motor_command(),
+                self.ss_general_servo.run_to_A_position_command(),
+                commands2.WaitCommand(1),
+                commands2.ParallelCommandGroup(
+                    self.ss_general_motor.run_backward_command(),
+                    self.ss_general_servo.run_to_max_position_command(),
+                ),
+                commands2.WaitCommand(1),
+                self.ss_general_motor.stop_motor_command()
+            )
+        )
+
+
     def keybindings(self):
         self.controller.x().onTrue(self.ss_general_motor.run_forward_command())
         self.controller.x().onFalse(self.ss_general_motor.stop_motor_command())
