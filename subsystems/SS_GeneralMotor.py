@@ -20,7 +20,13 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.is_running = True
     def run_forward_command(self):
         return commands2.cmd.runOnce(self.run_forward, self)
-
+    
+    def run_backward(self):
+        self.spark_motor.set(-self.speed)
+        self.is_running = True
+    def run_backward_command(self):
+        return commands2.cmd.runOnce(self.run_backward, self)
+    
     def stop_motor(self):
         self.spark_motor.stopMotor()
         self.is_running = False
