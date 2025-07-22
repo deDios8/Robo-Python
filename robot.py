@@ -30,14 +30,14 @@ class RobotContainer:
             commands2.SequentialCommandGroup(
                 commands2.WaitCommand(1),
                 self.ss_general_motor.stop_motor_command(),
-                self.ss_general_servo.run_to_A_position_command(),
-                commands2.WaitCommand(1),
-                commands2.ParallelCommandGroup(
-                    self.ss_general_motor.run_backward_command(),
-                    self.ss_general_servo.run_to_max_position_command(),
-                ),
-                commands2.WaitCommand(1),
-                self.ss_general_motor.stop_motor_command()
+                self.ss_general_servo.run_to_A_position_command()
+                # commands2.WaitCommand(1),
+                # commands2.ParallelCommandGroup(
+                #     self.ss_general_motor.run_backward_command(),
+                #     self.ss_general_servo.run_to_max_position_command(),
+                # ),
+                # commands2.WaitCommand(1),
+                # self.ss_general_motor.stop_motor_command()
             )
         )
 
@@ -52,7 +52,7 @@ class RobotContainer:
         self.controller.b().onFalse(self.ss_general_servo.run_to_max_position_command())
         self.controller.a().onTrue and self.controller.b().onTrue(self.ss_general_servo.run_to_A_position_command())
 
-        self.controller.povUp().onTrue(self.complicatedCommand)
+        self.controller.povUp().onTrue(self.complicatedCommand())
         #self.controller.povDown().onTrue(self.moveBackwardCommand)
         #self.controller.povLeft().onTrue(self.turnLeftCommand)
         #self.controller.povRight().onTrue(self.turnRightCommand)
