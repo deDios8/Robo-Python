@@ -30,4 +30,5 @@ requires = [
     "robotpy-commands-v2",
     "pynetworktables",
     "phoenix6",
+    "robotpy-rev",
 ]

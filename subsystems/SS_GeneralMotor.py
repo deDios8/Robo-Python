@@ -15,17 +15,30 @@ class SS_GeneralMotor(commands2.Subsystem):
         wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING"], self.is_running)
 
 
+    ## Methods
     def run_forward(self):
         self.spark_motor.set(self.speed)
         self.is_running = True
-    def run_forward_command(self):
-        return commands2.cmd.runOnce(self.run_forward, self)
 
     def stop_motor(self):
         self.spark_motor.stopMotor()
         self.is_running = False
+    
+    
+    ## Commands
+    def run_forward_command2(self):
+        return commands2.cmd.startEnd(self.run_forward, self.stop_motor, self)
+
+    def run_forward_command(self):
+        return commands2.cmd.runOnce(self.run_forward, self)
+    
     def stop_motor_command(self):
         return commands2.cmd.runOnce(self.stop_motor, self)
+    
+    def run_forward_fancycommand(self):
+
+        fancy_command = None
+        return fancy_command
 
 
     
