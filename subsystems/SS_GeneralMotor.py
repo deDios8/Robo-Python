@@ -11,10 +11,13 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.is_running = False
         self.is_running_timed = False
         self.speed = 0.6
+        self.joystick = wpilib.Joystick(0)  # Initialize joystick on port 0
 
     def periodic(self): # Special function called periodically by the robot
         wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING"], self.is_running)
         wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING_SECONDS"], self.is_running_timed)
+        speed = self.joystick.getY()  # Get the Y-axis value from the joystick
+        self.spark_motor.set(speed)
 
 
     def run_forward(self):
