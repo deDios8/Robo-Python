@@ -10,7 +10,7 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.spark_motor.setSafetyEnabled(False)
         self.is_running = False
         self.is_running_timed = False
-        self.speed = .6
+        self.speed = 0.6
 
     def periodic(self): # Special function called periodically by the robot
         wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING"], self.is_running)
@@ -38,6 +38,10 @@ class SS_GeneralMotor(commands2.Subsystem):
         )
         self.is_running_timed = False
         return command_group
+    
+    def slow_down(self):
+        self.speed = self.speed * 0.5
+        self.spark_motor.set(self.speed)
     
 
 
