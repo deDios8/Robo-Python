@@ -7,6 +7,7 @@ from subsystems.SS_GeneralServo import SS_GeneralServo
 class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
         RobotContainer()
+        self.joystick = wpilib.Joystick(0)  # Initialize joystick on port 0
         
 
     def teleopPeriodic(self):
@@ -39,7 +40,7 @@ class RobotContainer:
             self.controller.a().onTrue(self.ss_general_servo.run_to_A_position_command())
             self.controller.b().onTrue(self.ss_general_servo.run_to_A_position_command())
 
-        self.controller.y().whileTrue(self.ss_general_motor.slow_down())
+        self.controller.y().onTrue(self.ss_general_motor.slow_down())
         self.controller.rightBumper().whileTrue(self.ss_general_servo.adjust_servo_ahead_command())
         self.controller.leftBumper().whileTrue(self.ss_general_servo.adjust_servo_reverse_command())
         

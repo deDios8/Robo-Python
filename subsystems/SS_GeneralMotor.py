@@ -18,6 +18,8 @@ class SS_GeneralMotor(commands2.Subsystem):
         wpilib.SmartDashboard.putBoolean(constants.DASHBOARD_TITLES["GENERAL_MOTOR_RUNNING_SECONDS"], self.is_running_timed)
         speed = self.joystick.getY()  # Get the Y-axis value from the joystick
         self.spark_motor.set(speed)
+        direction = self.joystick.getX()  # Get the X-axis value from the joystick
+        direction.spark_motor.set(-direction)  # Set the motor speed based on joystick input
 
 
     def run_forward(self):
