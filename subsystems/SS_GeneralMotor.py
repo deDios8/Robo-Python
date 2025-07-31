@@ -44,6 +44,13 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.is_running_timed = False
         return command_group
     
+    def normal_speed(self):
+        self.speed = 0.6
+        self.spark_motor.set(self.speed)
+        
+    def normal_speed_command(self):
+        return commands2.cmd.runOnce(self.normal_speed, self)
+    
     def slow_down(self):
         self.speed = self.speed * 0.5
         self.spark_motor.set(self.speed)
