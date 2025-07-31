@@ -47,6 +47,8 @@ class SS_GeneralMotor(commands2.Subsystem):
     def slow_down(self):
         self.speed = self.speed * 0.5
         self.spark_motor.set(self.speed)
+    def slow_down_command(self):
+        return commands2.cmd.runOnce(self.slow_down, self)
     
 
 

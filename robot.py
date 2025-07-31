@@ -40,7 +40,7 @@ class RobotContainer:
             self.controller.a().onTrue(self.ss_general_servo.run_to_A_position_command())
             self.controller.b().onTrue(self.ss_general_servo.run_to_A_position_command())
 
-        self.controller.y().onTrue(self.ss_general_motor.slow_down())
+        self.controller.y().onTrue(self.ss_general_motor.slow_down_command())
         self.controller.rightBumper().whileTrue(self.ss_general_servo.adjust_servo_ahead_command())
         self.controller.leftBumper().whileTrue(self.ss_general_servo.adjust_servo_reverse_command())
         
