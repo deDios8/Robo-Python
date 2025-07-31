@@ -19,7 +19,7 @@ class SS_GeneralMotor(commands2.Subsystem):
         speed = self.joystick.getY()  # Get the Y-axis value from the joystick
         self.spark_motor.set(speed)
         direction = self.joystick.getX()  # Get the X-axis value from the joystick
-        direction.spark_motor.set(-direction)  # Set the motor speed based on joystick input
+        self.spark_motor.set(-direction)  # Set the motor speed based on joystick input
 
 
     def run_forward(self):
