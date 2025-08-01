@@ -47,7 +47,7 @@ class SS_GeneralMotor(commands2.Subsystem):
     def normal_speed(self):
         self.speed = 0.6
         self.spark_motor.set(self.speed)
-        
+
     def normal_speed_command(self):
         return commands2.cmd.runOnce(self.normal_speed, self)
     
@@ -56,7 +56,7 @@ class SS_GeneralMotor(commands2.Subsystem):
         self.spark_motor.set(self.speed)
     def slow_down_command(self):
         return commands2.cmd.runOnce(self.slow_down, self)
-    
+3
 
 
 
