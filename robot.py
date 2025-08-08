@@ -8,7 +8,7 @@ from subsystems.SS_EncodedMotor import SS_EncodedMotor
 class MyRobot(wpilib.TimedRobot):
     def robotInit(self):
         RobotContainer()
-
+        pass
     def teleopPeriodic(self):
         commands2.CommandScheduler.getInstance().run()
 
